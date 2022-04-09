@@ -1,0 +1,58 @@
+version: "3.8"
+
+x-default-service: &default-service
+  restart: always
+
+services:
+  frontend:
+    <<: *default-service
+    container_name: yourwebsite-frontend
+    build:
+      context: ./frontend
+    volumes:
+      - ./frontend:/app
+      # This avoids having the local node_modules in the container, by setting an empty folder as volume
+      - /app/node_modules
+    env_file: ./.envs/prod/.frontend
+    command: /bin/ash -c "yarn build && yarn start"
+
+  ghost:
+    image: ghost:4.41.3-alpine
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - ./ghost:/var/lib/ghost/content
+    env_file: ./.envs/prod/.ghost
+
+  nginx:
+    container_name: yourwebsite-nginx
+    build:
+      context: ./nginx
+    volumes:
+      - ./nginx/prod/conf.d/:/etc/nginx/conf.d/ # sites config, writable within container
+      - ./nginx/prod/include/:/etc/nginx/include/ # redirects config, writable within container
+      - ./letsencrypt:/etc/letsencrypt # certbot
+      - ./logs/nginx:/var/log/nginx # logs
+      - ./public:/var/www/public
+    depends_on:
+      - frontend
+      - ghost
+    ports:
+      - 80:80
+      - 443:443
+
+  mysql:
+    container_name: yourwebsite-mysql
+    image: mysql:5.7.34
+    restart: always
+    command: --max_allowed_packet=32505856
+    env_file: ./.envs/prod/.mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - .data/:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 5s
+      retries: 10

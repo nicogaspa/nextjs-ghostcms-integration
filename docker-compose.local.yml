@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  frontend:
+    ports:
+      - "3000:3000"
+      - "9229:9229"
+    env_file: ./.envs/local/.frontend
+    command: yarn dev
+
+  ghost:
+    ports:
+      - "2368:2368"
+    env_file: ./.envs/local/.ghost
+
+  nginx:
+    volumes:
+      - ./nginx/local/conf.d/:/etc/nginx/conf.d/ # sites config, writable within container
+      - ./nginx/local/include/:/etc/nginx/include/ # redirects config, writable within container
+      - ./nginx/local/nginx.conf:/etc/nginx/nginx.conf
+      - ./letsencrypt:/etc/letsencrypt # certbot
+      - ./logs/nginx:/var/log/nginx # logs
+      - ./frontend/build:/var/www/html
+
+  mysql:
+    env_file: ./.envs/local/.mysql
