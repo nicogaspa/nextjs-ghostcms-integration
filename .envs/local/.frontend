@@ -1,0 +1,2 @@
+NEXT_PUBLIC_GHOST_URL=http://ghost:2368/blog
+NEXT_PUBLIC_SITE_URL=http://dev.yourwebsite.com

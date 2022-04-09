@@ -1,0 +1,11 @@
+# General
+# ------------------------------------------------------------------------------
+url=http://dev.yourwebsite.com/blog
+
+# Database
+# ------------------------------------------------------------------------------
+database__client=mysql
+database__connection__host=mysql
+database__connection__user=root
+database__connection__password=
+database__connection__database=ghost
