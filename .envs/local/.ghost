@@ -7,5 +7,5 @@ url=http://dev.yourwebsite.com/blog
 database__client=mysql
 database__connection__host=mysql
 database__connection__user=root
-database__connection__password=
+database__connection__password=CHANGEME
 database__connection__database=ghost
