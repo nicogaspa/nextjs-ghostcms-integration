@@ -1,4 +1,4 @@
-# nextjs-ghostcms-integration
+# Next JS - Ghost CMS integration
 
 This repository is intended for demostration purposes and should not be used in a production environment.  
 It demonstrates how to integrate the usage of a nextjs frontend, while having a headless Ghost CMS instance.
